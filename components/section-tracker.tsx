@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 const sections = [
   { id: "home", name: "Home" },
@@ -8,46 +8,50 @@ const sections = [
   { id: "projects", name: "Projects" },
   { id: "skills", name: "Skills" },
   { id: "education", name: "Education" },
+  { id: "blog", name: "Blog" },
   { id: "contact", name: "Contact" },
-]
+];
 
 export default function SectionTracker() {
-  const [activeSection, setActiveSection] = useState("home")
+  const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
     const observerOptions = {
       root: null,
       rootMargin: "0px",
       threshold: 0.6, // Higher threshold for more accurate detection
-    }
+    };
 
-    const observerCallback = (entries) => {
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          setActiveSection(entry.target.id)
+          setActiveSection(entry.target.id);
         }
-      })
-    }
+      });
+    };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions)
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
 
     // Observe all sections
     sections.forEach(({ id }) => {
-      const element = document.getElementById(id)
+      const element = document.getElementById(id);
       if (element) {
-        observer.observe(element)
+        observer.observe(element);
       }
-    })
+    });
 
     return () => {
       sections.forEach(({ id }) => {
-        const element = document.getElementById(id)
+        const element = document.getElementById(id);
         if (element) {
-          observer.unobserve(element)
+          observer.unobserve(element);
         }
-      })
-    }
-  }, [])
+      });
+    };
+  }, []);
 
   return (
     <div className="fixed left-6 top-1/2 z-50 hidden -translate-y-1/2 transform flex-col gap-4 md:flex">
@@ -78,5 +82,5 @@ export default function SectionTracker() {
         </a>
       ))}
     </div>
-  )
+  );
 }
