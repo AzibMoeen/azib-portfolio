@@ -1,148 +1,338 @@
-import type { BlogPost } from "./types";
+export type BlogPost = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  coverImage?: string;
+  readingTime: number;
+  categories: string[];
+  content: string; // Markdown string
+};
 
 export const blogPosts: BlogPost[] = [
+  {
+    slug: "optimizing-react-performance",
+    title: "Optimizing React Performance: Tips and Tricks",
+    excerpt:
+      "Master advanced techniques to improve your React app's speed and efficiency. Learn about avoiding re-renders, code splitting, memoization, virtualization, and more.",
+    date: "2023-02-18",
+    coverImage:
+      "https://miro.medium.com/v2/resize:fit:1100/format:webp/1*PRSCPASXfR-Kc4sQ_0ZSKw.jpeg?height=600&width=800",
+    readingTime: 18,
+    categories: ["React", "Performance", "JavaScript"],
+    content: `
+# Optimizing React Performance: Tips and Tricks
+
+> React is fast—but your app might not be. Learn practical, battle-tested ways to turbocharge your React performance.
+
+---
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [1. Avoid Unnecessary Renders](#1-avoid-unnecessary-renders)
+- [2. Use Memoization Strategically](#2-use-memoization-strategically)
+- [3. Code Splitting](#3-code-splitting)
+- [4. List Virtualization](#4-list-virtualization)
+- [5. Optimize State Management](#5-optimize-state-management)
+- [6. Reduce Component Complexity](#6-reduce-component-complexity)
+- [7. Lazy Load Images and Assets](#7-lazy-load-images-and-assets)
+- [8. Avoid Anonymous Functions in JSX](#8-avoid-anonymous-functions-in-jsx)
+- [9. Use Production Build](#9-use-production-build)
+- [10. Monitor and Analyze Performance](#10-monitor-and-analyze-performance)
+- [Conclusion](#conclusion)
+
+---
+
+## Introduction
+
+React's virtual DOM and diffing algorithm provide great performance out of the box. However, as your app grows, you'll encounter performance bottlenecks if not handled properly. Let’s explore several techniques to mitigate this.
+
+---
+
+## 1. Avoid Unnecessary Renders
+
+Unnecessary re-renders are the most common performance killer. Even small components can lead to big performance costs if rendered too often.
+
+**Use \`React.memo\`** to prevent re-rendering of pure functional components unless props change.
+
+\`\`\`js
+const MyComponent = React.memo(({ value }) => {
+  return <div>{value}</div>;
+});
+\`\`\`
+
+---
+
+## 2. Use Memoization Strategically
+
+**\`useMemo\`** and **\`useCallback\`** help in memoizing expensive computations and function definitions.
+
+\`\`\`js
+const processedData = useMemo(() => computeHeavy(data), [data]);
+const handleClick = useCallback(() => doSomething(), []);
+\`\`\`
+
+Use them only when:
+- The computation is expensive
+- Referential equality is necessary (e.g. for dependencies or child components)
+
+---
+
+## 3. Code Splitting
+
+Instead of sending a monolithic bundle, **split your code** into chunks and load on demand.
+
+\`\`\`js
+const LazyComponent = React.lazy(() => import('./LazyComponent'));
+
+<Suspense fallback={<Loading />}>
+  <LazyComponent />
+</Suspense>
+\`\`\`
+
+Use tools like Webpack or Vite, and check Lighthouse for bundle analysis.
+
+---
+
+## 4. List Virtualization
+
+Rendering hundreds of DOM nodes? Use **virtualization**.
+
+\`\`\`js
+import { FixedSizeList as List } from 'react-window';
+
+<List height={400} itemCount={1000} itemSize={35} width={300}>
+  {({ index, style }) => <div style={style}>Row {index}</div>}
+</List>
+\`\`\`
+
+- Use \`react-window\` for small apps
+- Use \`react-virtualized\` for feature-rich needs (infinite scroll, autosizers, etc.)
+
+---
+
+## 5. Optimize State Management
+
+Too much global state or unnecessary state updates slow apps down.
+
+- Keep **local state local**
+- Avoid lifting state unless necessary
+- Use **selectors** in Redux/Zustand
+- Normalize nested data
+
+\`\`\`js
+const user = useSelector((state) => state.user.name);
+\`\`\`
+
+Also, consider React Query or TanStack Query for server state.
+
+---
+
+## 6. Reduce Component Complexity
+
+Split large components into smaller ones.
+
+Benefits:
+- Easier to maintain
+- More reusable
+- Better separation of concerns
+- Reduced re-render scope
+
+Use component composition, not props drilling.
+
+---
+
+## 7. Lazy Load Images and Assets
+
+Use lazy loading for images:
+
+\`\`\`html
+<img loading="lazy" src="big-image.jpg" alt="..." />
+\`\`\`
+
+For better control, use libraries like \`react-lazyload\` or \`react-intersection-observer\`.
+
+---
+
+## 8. Avoid Anonymous Functions in JSX
+
+Each render creates a new function reference:
+
+❌ Bad:
+\`\`\`js
+<button onClick={() => doSomething()}>Click</button>
+\`\`\`
+
+✅ Good:
+\`\`\`js
+const handleClick = useCallback(() => doSomething(), []);
+<button onClick={handleClick}>Click</button>
+\`\`\`
+
+---
+
+## 9. Use Production Build
+
+Make sure you're shipping the production version of React:
+
+- Use \`npm run build\` (Create React App)
+- Use \`next build\` (Next.js)
+
+This removes dev warnings, extra logs, and enables optimizations.
+
+---
+
+## 10. Monitor and Analyze Performance
+
+Use tools like:
+
+- **React DevTools Profiler** – See which components re-render and why
+- **Chrome Lighthouse** – Performance score, bundle size, unused JS/CSS
+- **Why Did You Render** – Detects unnecessary re-renders
+- **Web Vitals** – Measure FCP, LCP, TTI, CLS, etc.
+
+---
+
+## Conclusion
+
+Performance in React isn't about one magic trick—it's a combination of best practices:
+
+- Avoid unnecessary renders
+- Use memoization wisely
+- Split code and virtualize large lists
+- Manage state with precision
+- Monitor and test continuously
+
+With these strategies, your React apps will be smoother, faster, and scalable.
+
+> 🚀 Want more tips? Consider exploring concurrent rendering, server components (React 19), or Suspense boundaries for even better performance in modern React apps.
+`,
+  },
+
   {
     slug: "building-modern-web-apps-with-next-js",
     title: "Building Modern Web Applications with Next.js",
     excerpt:
       "Learn how to leverage Next.js to create fast, SEO-friendly web applications with a great developer experience.",
-    date: "May 15, 2023",
-    coverImage: "/placeholder.svg?height=600&width=800",
+    date: "2023-05-15",
+    coverImage:
+      "https://miro.medium.com/v2/resize:fit:1100/format:webp/1*JZGqFjom_RE0PMz1wxYncg.png?height=600&width=800",
     readingTime: 8,
     categories: ["Next.js", "React", "Web Development"],
-    content: [
-      "Next.js has revolutionized the way developers build React applications. With its built-in features like server-side rendering, static site generation, and API routes, it provides a comprehensive solution for modern web development.",
-      "One of the key advantages of Next.js is its file-based routing system. Instead of configuring routes manually, you simply create files in the pages directory, and Next.js automatically creates routes based on the file structure. This makes it incredibly intuitive to organize your application.",
-      "Another powerful feature is the ability to choose your rendering method on a per-page basis. You can use static generation for marketing pages, server-side rendering for dynamic content, and client-side rendering when appropriate. This flexibility allows you to optimize for both performance and user experience.",
-      "Next.js also provides excellent developer experience with features like Fast Refresh, which gives you instant feedback as you edit your code. The built-in CSS and Sass support, along with support for CSS-in-JS libraries, makes styling your application a breeze.",
-      "In conclusion, Next.js is an excellent choice for building modern web applications. Its comprehensive feature set, excellent performance, and developer experience make it a top choice for React developers.",
-    ],
+    content: `
+# Building Modern Web Applications with Next.js
+
+Next.js has revolutionized the way developers build React applications. With its built-in features like server-side rendering, static site generation, and API routes, it provides a comprehensive solution for modern web development.
+
+## File-based Routing
+One of the key advantages of Next.js is its file-based routing system. Instead of configuring routes manually, you simply create files in the \`pages\` directory, and Next.js automatically creates routes based on the file structure. This makes it incredibly intuitive to organize your application.
+
+\`\`\`js
+// pages/about.js
+export default function About() {
+  return <div>About Page</div>;
+}
+\`\`\`
+
+## Flexible Rendering
+Another powerful feature is the ability to choose your rendering method on a per-page basis. You can use static generation for marketing pages, server-side rendering for dynamic content, and client-side rendering when appropriate. This flexibility allows you to optimize for both performance and user experience.
+
+## Developer Experience
+Next.js also provides excellent developer experience with features like Fast Refresh, which gives you instant feedback as you edit your code. The built-in CSS and Sass support, along with support for CSS-in-JS libraries, makes styling your application a breeze.
+
+---
+
+In conclusion, Next.js is an excellent choice for building modern web applications. Its comprehensive feature set, excellent performance, and developer experience make it a top choice for React developers.
+`,
   },
   {
     slug: "mastering-mongodb-for-mern-stack",
     title: "Mastering MongoDB for MERN Stack Development",
     excerpt:
       "Dive deep into MongoDB and learn how to effectively use it in your MERN stack applications.",
-    date: "April 22, 2023",
-    coverImage: "/placeholder.svg?height=600&width=800",
+    date: "2023-04-22",
+    coverImage:
+      "https://www.threatdown.com/wp-content/uploads/2024/04/MongoDB_data_breach.png?resize=1536,863?height=600&width=800",
     readingTime: 10,
     categories: ["MongoDB", "MERN Stack", "Database"],
-    content: [
-      "MongoDB is a popular NoSQL database that works exceptionally well with Node.js and Express, making it a perfect fit for MERN stack applications. Its document-oriented structure aligns naturally with JavaScript objects, allowing for a seamless development experience.",
-      "One of the key advantages of MongoDB is its flexibility. Unlike traditional relational databases, MongoDB doesn't require a predefined schema. This means you can store documents with different structures in the same collection, which is particularly useful during the early stages of development when your data model might evolve rapidly.",
-      "MongoDB also excels at scaling. Its horizontal scaling capabilities through sharding allow you to distribute data across multiple machines as your application grows. This makes it suitable for applications that need to handle large amounts of data or traffic.",
-      "When working with MongoDB in a MERN stack application, Mongoose is an invaluable tool. It provides a straightforward, schema-based solution to model your application data and includes built-in type casting, validation, query building, and business logic hooks.",
-      "In conclusion, mastering MongoDB is essential for effective MERN stack development. Its flexibility, scalability, and natural fit with JavaScript make it an excellent choice for modern web applications.",
-    ],
+    content: `
+# Mastering MongoDB for MERN Stack Development
+
+MongoDB is a popular NoSQL database that works exceptionally well with Node.js and Express, making it a perfect fit for MERN stack applications. Its document-oriented structure aligns naturally with JavaScript objects, allowing for a seamless development experience.
+
+## Flexibility
+One of the key advantages of MongoDB is its flexibility. Unlike traditional relational databases, MongoDB doesn't require a predefined schema. This means you can store documents with different structures in the same collection, which is particularly useful during the early stages of development when your data model might evolve rapidly.
+
+## Scaling
+MongoDB also excels at scaling. Its horizontal scaling capabilities through sharding allow you to distribute data across multiple machines as your application grows. This makes it suitable for applications that need to handle large amounts of data or traffic.
+
+## Using Mongoose
+When working with MongoDB in a MERN stack application, Mongoose is an invaluable tool. It provides a straightforward, schema-based solution to model your application data and includes built-in type casting, validation, query building, and business logic hooks.
+
+\`\`\`js
+// models/User.js
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  password: String,
+});
+
+export default mongoose.model("User", userSchema);
+\`\`\`
+
+---
+
+In conclusion, mastering MongoDB is essential for effective MERN stack development. Its flexibility, scalability, and natural fit with JavaScript make it an excellent choice for modern web applications.
+`,
   },
   {
     slug: "responsive-design-principles-for-modern-web",
     title: "Responsive Design Principles for Modern Web",
     excerpt:
       "Explore key principles and techniques for creating responsive websites that work well on all devices.",
-    date: "March 10, 2023",
-    coverImage: "/placeholder.svg?height=600&width=800",
+    date: "2023-03-10",
+    coverImage:
+      "https://www.threatdown.com/wp-content/uploads/2024/04/MongoDB_data_breach.png?resize=1536,863?height=600&width=800",
     readingTime: 7,
     categories: ["CSS", "UI/UX", "Web Development"],
-    content: [
-      "Responsive web design is no longer optional—it's a necessity. With users accessing websites from a variety of devices with different screen sizes, creating a consistent and optimal experience across all devices is crucial for success.",
-      "The foundation of responsive design is the use of fluid grids. Instead of fixed-width layouts, responsive designs use relative units like percentages to create layouts that adapt to the screen size. This ensures that your layout scales proportionally regardless of the device.",
-      "Flexible images are another key component. By setting max-width: 100%, images scale down if their container becomes smaller than the image's original size, but never scale up beyond their original size. This prevents pixelation while ensuring images don't overflow their containers.",
-      "Media queries allow you to apply different styles based on device characteristics, most commonly the viewport width. This enables you to create breakpoints where your layout changes to better accommodate different screen sizes.",
-      "Modern CSS features like Flexbox and Grid have made responsive design much more manageable. These layout systems provide powerful tools for creating complex, responsive layouts with clean, maintainable code.",
-      "In conclusion, mastering responsive design principles is essential for creating modern websites. By implementing fluid grids, flexible images, and appropriate media queries, you can ensure your website provides an optimal experience for all users, regardless of their device.",
-    ],
-  },
-  {
-    slug: "optimizing-react-performance",
-    title: "Optimizing React Performance: Tips and Tricks",
-    excerpt:
-      "Learn practical techniques to improve the performance of your React applications.",
-    date: "February 18, 2023",
-    coverImage: "/placeholder.svg?height=600&width=800",
-    readingTime: 9,
-    categories: ["React", "Performance", "JavaScript"],
-    content: [
-      "React is known for its virtual DOM and efficient rendering, but as applications grow in complexity, performance can become an issue. Fortunately, there are several techniques you can use to optimize your React applications.",
-      "One of the most effective ways to improve performance is to avoid unnecessary renders. React's memo, useMemo, and useCallback hooks are invaluable tools for this. By memoizing components, values, and functions, you can prevent expensive recalculations when the inputs haven't changed.",
-      "Code splitting is another powerful technique. Instead of sending the entire application to the user at once, you can split your code into smaller chunks that are loaded only when needed. React.lazy and Suspense make this process straightforward.",
-      "Virtualization is essential when rendering large lists. Libraries like react-window and react-virtualized allow you to render only the items currently visible to the user, significantly reducing the number of DOM nodes and improving performance.",
-      "Optimizing state management is also crucial. Consider using local state for UI-specific state and only lifting state up when necessary. For complex applications, tools like Redux can help, but be mindful of unnecessary re-renders caused by state changes.",
-      "In conclusion, optimizing React performance requires a combination of techniques. By avoiding unnecessary renders, implementing code splitting, using virtualization for large lists, and optimizing state management, you can create React applications that are both feature-rich and performant.",
-    ],
-  },
-  {
-    slug: "introduction-to-appwrite-backend-as-a-service",
-    title: "Introduction to Appwrite: Backend as a Service",
-    excerpt:
-      "Discover how Appwrite can simplify backend development for your web and mobile applications.",
-    date: "January 25, 2023",
-    coverImage: "/placeholder.svg?height=600&width=800",
-    readingTime: 6,
-    categories: ["Appwrite", "Backend", "Web Development"],
-    content: [
-      "Appwrite is an open-source Backend as a Service (BaaS) platform that provides developers with a set of APIs to handle common backend tasks. It's designed to be self-hosted, giving you complete control over your data and infrastructure.",
-      "One of the key features of Appwrite is its authentication system. It supports multiple authentication methods, including email/password, OAuth providers, and phone authentication. This makes it easy to implement secure user authentication without having to build everything from scratch.",
-      "Appwrite also provides a database service with real-time capabilities. You can create collections, define attributes, and set up indexes for efficient queries. The real-time subscriptions allow your application to receive updates whenever data changes.",
-      "File storage is another area where Appwrite excels. It provides a simple API for uploading, downloading, and managing files. You can also use Appwrite's image transformation capabilities to resize, crop, and optimize images on the fly.",
-      "For serverless functionality, Appwrite offers Cloud Functions. You can write functions in multiple languages, including Node.js, PHP, Python, Ruby, and more. These functions can be triggered by events, scheduled, or called directly from your application.",
-      "In conclusion, Appwrite is a powerful tool for developers looking to simplify backend development. Its comprehensive feature set, combined with the benefits of self-hosting, makes it an excellent choice for a wide range of applications.",
-    ],
-  },
-  {
-    slug: "getting-started-with-tailwind-css",
-    title: "Getting Started with Tailwind CSS",
-    excerpt:
-      "Learn how to use Tailwind CSS to rapidly build modern user interfaces without writing custom CSS.",
-    date: "December 12, 2022",
-    coverImage: "/placeholder.svg?height=600&width=800",
-    readingTime: 5,
-    categories: ["CSS", "Tailwind CSS", "UI/UX"],
-    content: [
-      "Tailwind CSS has revolutionized the way developers approach styling web applications. Unlike traditional CSS frameworks that provide pre-designed components, Tailwind provides low-level utility classes that let you build completely custom designs without leaving your HTML.",
-      "Getting started with Tailwind is straightforward. You can install it via npm and integrate it with your build process, or use the CDN for quick prototyping. Once set up, you can start using Tailwind's utility classes in your HTML.",
-      "One of the key advantages of Tailwind is its utility-first approach. Instead of writing custom CSS and coming up with class names, you apply pre-existing utility classes directly in your HTML. This leads to faster development and more consistent designs.",
-      "Tailwind is highly customizable. Through the tailwind.config.js file, you can customize colors, spacing, breakpoints, and more to match your design requirements. You can also extend Tailwind with your own custom utilities if needed.",
-      "For responsive design, Tailwind provides intuitive screen-size prefixes (sm:, md:, lg:, etc.) that you can add to any utility class. This makes it easy to create layouts that adapt to different screen sizes.",
-      "In conclusion, Tailwind CSS offers a powerful and efficient approach to styling web applications. Its utility-first methodology, combined with its extensive customization options, makes it an excellent choice for developers looking to build custom designs quickly.",
-    ],
-  },
-  {
-    slug: "implementing-authentication-in-next-js",
-    title: "Implementing Authentication in Next.js Applications",
-    excerpt:
-      "A comprehensive guide to adding authentication to your Next.js applications using NextAuth.js.",
-    date: "November 5, 2022",
-    coverImage: "/placeholder.svg?height=600&width=800",
-    readingTime: 11,
-    categories: ["Next.js", "Authentication", "Web Development"],
-    content: [
-      "Authentication is a critical aspect of most web applications. In Next.js applications, NextAuth.js has emerged as the go-to solution for implementing authentication. It's a complete open-source authentication solution designed specifically for Next.js applications.",
-      "Setting up NextAuth.js is straightforward. You start by creating an API route at pages/api/auth/[...nextauth].js that exports a NextAuth configuration object. This configuration includes your authentication providers, callbacks, and other options.",
-      "NextAuth.js supports a wide range of authentication providers, including OAuth services like Google, Facebook, and GitHub, as well as email/password authentication. You can also implement custom providers if needed.",
-      "One of the key advantages of NextAuth.js is its seamless integration with Next.js. It provides hooks and utilities that make it easy to access the session and user data from both client and server components.",
-      "For protected routes, NextAuth.js offers middleware that can be used to restrict access to authenticated users. You can also implement role-based access control to further refine who can access specific parts of your application.",
-      "Database integration is another strong point of NextAuth.js. It supports various database adapters, allowing you to store user data and sessions in your preferred database.",
-      "In conclusion, NextAuth.js provides a robust and flexible solution for implementing authentication in Next.js applications. Its comprehensive feature set and seamless integration with Next.js make it an excellent choice for developers looking to add authentication to their applications.",
-    ],
-  },
-  {
-    slug: "exploring-vector-embeddings-for-ai",
-    title: "Exploring Vector Embeddings for AI Applications",
-    excerpt:
-      "Understand how vector embeddings work and how they can be used in AI applications for semantic search and more.",
-    date: "October 20, 2022",
-    coverImage: "/placeholder.svg?height=600&width=800",
-    readingTime: 12,
-    categories: ["AI", "Vector Embeddings", "Machine Learning"],
-    content: [
-      "Vector embeddings have become a fundamental component of many AI applications. At their core, vector embeddings are numerical representations of data (such as text, images, or audio) in a high-dimensional space, where similar items are positioned closer together.",
-      "One of the most common applications of vector embeddings is in natural language processing. Models like Word2Vec, GloVe, and more recently, those derived from transformers like BERT and GPT, create embeddings that capture semantic relationships between words and phrases.",
-      "These embeddings enable powerful semantic search capabilities. Unlike traditional keyword-based search, semantic search understands the meaning behind queries and can return results that are conceptually related, even if they don't contain the exact search terms.",
-      "Vector databases like Pinecone, Milvus, and Weaviate are designed specifically for storing and querying vector embeddings efficiently. They use algorithms like Approximate Nearest Neighbor (ANN) to quickly find the most similar vectors to a query vector.",
-      "Beyond search, vector embeddings are used in recommendation systems, clustering, classification, and more. They provide a way to represent complex data in a format that machine learning algorithms can work with effectively.",
-      "Creating custom embeddings for specific domains or applications is also possible. By fine-tuning pre-trained models on domain-specific data, you can create embeddings that better capture the nuances and relationships relevant to your specific use case.",
-      "In conclusion, vector embeddings are a powerful tool for AI applications. Their ability to capture semantic relationships and represent complex data in a machine-readable format makes them invaluable for a wide range of applications, from search and recommendations to classification and clustering.",
-    ],
+    content: `
+# Responsive Design Principles for Modern Web
+
+Responsive web design is no longer optional—it's a necessity. With users accessing websites from a variety of devices with different screen sizes, creating a consistent and optimal experience across all devices is crucial for success.
+
+## Fluid Grids
+The foundation of responsive design is the use of fluid grids. Instead of fixed-width layouts, responsive designs use relative units like percentages to create layouts that adapt to the screen size. This ensures that your layout scales proportionally regardless of the device.
+
+## Flexible Images
+Flexible images are another key component. By setting \`max-width: 100%\`, images scale down if their container becomes smaller than the image's original size, but never scale up beyond their original size. This prevents pixelation while ensuring images don't overflow their containers.
+
+\`\`\`css
+img {
+  max-width: 100%;
+  height: auto;
+}
+\`\`\`
+
+## Media Queries
+Media queries allow you to apply different styles based on device characteristics, most commonly the viewport width. This enables you to create breakpoints where your layout changes to better accommodate different screen sizes.
+
+\`\`\`css
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+  }
+}
+\`\`\`
+
+## Modern CSS Features
+Modern CSS features like Flexbox and Grid have made responsive design much more manageable. These layout systems provide powerful tools for creating complex, responsive layouts with clean, maintainable code.
+
+---
+
+In conclusion, mastering responsive design principles is essential for creating modern websites. By implementing fluid grids, flexible images, and appropriate media queries, you can ensure your website provides an optimal experience for all users, regardless of their device.
+`,
   },
 ];

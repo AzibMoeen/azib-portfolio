@@ -10,7 +10,6 @@ export const metadata = {
   description:
     "Read the latest articles on web development, MERN stack, and more by Azib Moeen",
 };
-
 export default function BlogPage() {
   return (
     <div className="pt-16 dark:bg-gray-900 min-h-screen">
